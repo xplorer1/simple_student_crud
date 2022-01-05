@@ -2,10 +2,17 @@ package com.example.spring.controllers;
 
 import com.example.spring.models.Student;
 import com.example.spring.services.StudentService;
+import com.example.spring.utils.AppResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path = "api/v1/student")
@@ -19,22 +26,53 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<Student> getStudents() {
-        return studentService.getStudents();
+    public ResponseEntity<AppResponse> getStudents() {
+
+        return ResponseEntity.ok(
+            AppResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(OK)
+                .data(Map.of("students", studentService.getStudents()))
+                .build()
+        );
     }
 
     @PostMapping
-    public Student saveStudent(@RequestBody Student student) {
-        return studentService.saveStudent( student );
+    public ResponseEntity<AppResponse> saveStudent(@RequestBody Student student) {
+        studentService.saveStudent( student );
+
+        return ResponseEntity.ok(
+            AppResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(OK)
+                .message("Student saved successfully.")
+                .build()
+        );
     }
 
     @DeleteMapping(path = "{studentId}")
-    public void deleteStudent(@PathVariable Long studentId) {
+    public ResponseEntity<AppResponse> deleteStudent(@PathVariable Long studentId) {
         studentService.deleteStudent(studentId);
+
+        return ResponseEntity.ok(
+            AppResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(OK)
+                .message("Student deleted successfully.")
+                .build()
+        );
     }
 
     @PutMapping
-    public Student updateStudent(@RequestBody Student student) {
-        return studentService.updateStudent(student);
+    public ResponseEntity<AppResponse> updateStudent(@RequestBody Student student) {
+        studentService.updateStudent(student);
+
+        return ResponseEntity.ok(
+            AppResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(OK)
+                .message("Student updated successfully.")
+                .build()
+        );
     }
 }
